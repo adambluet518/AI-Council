@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Council — Multi-Agent Workspace</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --surface: #16181c;
+      --card: #1e2128;
+      --border: #2a2f3a;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --green: #10b981;
+      --purple: #a855f7;
+      --red: #ef4444;
+      --radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 17, 21, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--muted);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59, 130, 246, 0.12);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #3b82f6, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 580px;
+      margin: 0 auto 36px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Features */
+    .section {
+      padding: 80px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .section-header h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-header p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: border-color 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: #3b82f680;
+    }
+
+    .feature-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 18px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* Agents */
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .agent-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+    }
+
+    .agent-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      margin: 0 auto 14px;
+    }
+
+    .agent-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+
+    .agent-card .role {
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .agent-card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* How it works */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 32px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      padding-left: 56px;
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .step h3 {
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* CTA */
+    .cta {
+      background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      padding: 80px 0;
+    }
+
+    .cta h2 {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .cta p {
+      color: var(--muted);
+      margin-bottom: 28px;
+      font-size: 1.1rem;
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    footer a:hover {
+      color: var(--text);
+    }
+
+    @media (max-width: 640px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 70px 0 60px;
+      }
+
+      .section {
+        padding: 60px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">
+          <span>✦</span> AI Council
+        </div>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#agents">Agents</a>
+          <a href="#how">How it works</a>
+        </div>
+        <a href="#download" class="btn btn-primary">Download</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">Multi-Agent Collaboration</div>
+      <h1>Your AI team,<br><span>working together</span></h1>
+      <p>
+        AI Council brings multiple specialized agents into one workspace.
+        They reason together, challenge ideas, and help you ship better work.
+      </p>
+      <div class="hero-actions">
+        <a href="#download" class="btn btn-primary">Download for Mac</a>
+        <a href="#features" class="btn btn-secondary">See Features</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Built for real collaboration</h2>
+        <p>Not just another chatbot. A full multi-agent workspace designed for serious work.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon" style="background: rgba(59,130,246,0.15);">💬</div>
+          <h3>Shared Conversation</h3>
+          <p>All agents read the full history and build on each other’s ideas in one continuous thread.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background: rgba(168,85,247,0.15);">👥</div>
+          <h3>Custom Agents</h3>
+          <p>Create, edit, and delete agents with unique roles, personalities, and system instructions.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background: rgba(16,185,129,0.15);">⚡</div>
+          <h3>Team or Solo Mode</h3>
+          <p>Let every agent respond, or talk to just one. Switch modes instantly from the sidebar.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background: rgba(239,68,68,0.15);">🔌</div>
+          <h3>OpenAI-Compatible</h3>
+          <p>Works with LM Studio, Ollama, OpenAI, or any server that speaks the chat completions API.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background: rgba(245,158,11,0.15);">🎨</div>
+          <h3>Clean Dark UI</h3>
+          <p>Modern, distraction-free interface designed for long sessions and clear thinking.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background: rgba(236,72,153,0.15);">📁</div>
+          <h3>Export Anytime</h3>
+          <p>Save full conversations as text files with one click for notes, docs, or sharing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="agents" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="container">
+      <div class="section-header">
+        <h2>Meet the default team</h2>
+        <p>Four specialists ready to work. Or build your own.</p>
+      </div>
+      <div class="agents-grid">
+        <div class="agent-card">
+          <div class="agent-dot" style="background: #3b82f6;"></div>
+          <h3>Programmer</h3>
+          <div class="role">Software Developer</div>
+          <p>Writes clean code, spots technical flaws, and suggests solid architecture.</p>
+        </div>
+        <div class="agent-card">
+          <div class="agent-dot" style="background: #a855f7;"></div>
+          <h3>Designer</h3>
+          <div class="role">UI / UX & Graphics</div>
+          <p>Focuses on intuitive interfaces, polished visuals, and smooth experiences.</p>
+        </div>
+        <div class="agent-card">
+          <div class="agent-dot" style="background: #ef4444;"></div>
+          <h3>Tester</h3>
+          <div class="role">QA & Edge Cases</div>
+          <p>Hunts bugs, checks edge cases, and verifies solutions against failure modes.</p>
+        </div>
+        <div class="agent-card">
+          <div class="agent-dot" style="background: #10b981;"></div>
+          <h3>Project Manager</h3>
+          <div class="role">Coordination</div>
+          <p>Synthesizes ideas, keeps the team aligned, and outlines clear next steps.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="container">
+      <div class="section-header">
+        <h2>How it works</h2>
+        <p>Simple setup. Powerful results.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <h3>Connect your model</h3>
+          <p>Point AI Council at any OpenAI-compatible endpoint (LM Studio, Ollama, OpenAI, etc.).</p>
+        </div>
+        <div class="step">
+          <h3>Choose your team</h3>
+          <p>Use the default agents or create your own with custom roles and instructions.</p>
+        </div>
+        <div class="step">
+          <h3>Start collaborating</h3>
+          <p>Type a message. Watch the agents respond, build on each other, and refine ideas together.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" id="download">
+    <div class="container">
+      <h2>Ready to try AI Council?</h2>
+      <p>Download the Mac app and start collaborating with your AI team today.</p>
+      <a href="#" class="btn btn-primary" style="font-size: 1.05rem; padding: 14px 28px;">
+        Download for Mac
+      </a>
+      <p style="margin-top: 20px; font-size: 0.9rem; color: var(--muted);">
+        Requires Java 17+ or use the packaged version
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>✦ AI Council — Multi-Agent Workspace</p>
+      <p style="margin-top: 8px;">Built for people who think better with a team.</p>
+    </div>
+  </footer>
+</body>
+</html>
